@@ -27,7 +27,6 @@ Usages:
 
 ```
 ./sfx14-41g.sh [g|gpu] [on|off]
-
 ```
 
 dependency: acpi_call-dkms
