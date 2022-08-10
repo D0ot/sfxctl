@@ -15,7 +15,6 @@ Functions:
 Usages:
 ```
 ./sfx14-41g.sh [m|mode] [s|n|p|m]
-
 ```
 s is Slient, n is Normal, p is Performance, m is Max fan speed.
 
