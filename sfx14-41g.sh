@@ -1,11 +1,16 @@
 #!/bin/env sh
 
 readonly SCRIPTS_HOME="$HOME/programs/swiftx-fn"
+
 readonly BAT_PATH="/sys/class/power_supply/BAT1"
+
 readonly GPU_OFF_METHOD="\_SB.PCI0.GPP0.PG00._OFF"
 readonly GPU_ON_METHOD="\_SB.PCI0.GPP0.PG00._ON"
 readonly ACPI_CALL_PATH="/proc/acpi/call"
 readonly PCIE_GPP_BRIDGE_PM='/sys/bus/pci/devices/0000:00:01.1/power/control'
+
+readonly BRIGHTNESS_WRITE="/sys/class/backlight/amdgpu_bl0/brightness"
+readonly BRIGHTNESS_READ="/sys/class/backlight/amdgpu_bl0/actual_brightness"
 
 test_root () {
     # test root privilege -- rc: 0=root, 1=not root
@@ -83,14 +88,54 @@ gpu ()
 
 }
 
+blctl_print_cur()
+{
+    local cur_bl=$(cat ${BRIGHTNESS_READ})
+    echo "Current brightness : $cur_bl / 255"
+}
+
+blctl () 
+{
+    if [ $# -gt 1 ]
+    then
+        echo "Too much args"
+        exit 1
+    fi
+
+    if [ $# -eq 0 ]
+    then
+        blctl_print_cur
+        exit 1
+    fi
+    
+    local cur_bl=$(cat ${BRIGHTNESS_READ})
+
+    local val=$(echo $1 | bc)
+
+
+    local new_bl=$(echo "$val + $cur_bl" | bc)
+
+    if [ $new_bl -gt 255 ]
+    then
+        new_bl=255
+    fi
+
+    if [ $new_bl -lt 0 ]
+    then
+        new_bl=0
+    fi
+
+    echo $new_bl | tee ${BRIGHTNESS_WRITE}
+}
+
 bl ()
 {
     case "$1" in
         "up"|"Up"|"UP"|"u")
-            ${SCRIPTS_HOME}/blctl.sh "10"
+            blctl "10"
         ;;
         "down"|"d"|"Down"|"DOWN")
-            ${SCRIPTS_HOME}/blctl.sh "-10"
+            blctl "-10"
         ;;
         *)
             echo "no valid args." 2>&1
