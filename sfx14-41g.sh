@@ -7,8 +7,8 @@ readonly GPU_ON_METHOD="\_SB.PCI0.GPP0.PG00._ON"
 readonly ACPI_CALL_PATH="/proc/acpi/call"
 readonly PCIE_GPP_BRIDGE_PM='/sys/bus/pci/devices/0000:00:01.1/power/control'
 
-readonly BRIGHTNESS_WRITE="/sys/class/backlight/amdgpu_bl0/brightness"
-readonly BRIGHTNESS_READ="/sys/class/backlight/amdgpu_bl0/actual_brightness"
+readonly BRIGHTNESS_WRITE="/sys/class/backlight/amdgpu_bl1/brightness"
+readonly BRIGHTNESS_READ="/sys/class/backlight/amdgpu_bl1/actual_brightness"
 
 test_root () {
     # test root privilege -- rc: 0=root, 1=not root
